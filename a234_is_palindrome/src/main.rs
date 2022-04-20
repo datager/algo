@@ -1,22 +1,21 @@
 use std::fmt::Display;
 
-// 链表的实现
-pub struct List {
-    head: Link,
-}
+// 先定义节点, Option是为了判空, Box是为了放在heap上(由list特性决定的)
 type Link = Option<Box<Node>>;
-
 struct Node {
     elem: i32,
     next: Link,
 }
-
 impl Node {
-    fn new(elem: i32) -> Self {
-        Self { elem, next: None }
+    fn new(elem: i32) -> Node {
+        Node { elem, next: None }
     }
 }
+struct List {
+    head: Link,
+}
 
+// 方便打印
 impl Display for List {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "链表: ")?;
@@ -24,13 +23,12 @@ impl Display for List {
             write!(f, "None")?;
             return Ok(());
         }
-        let mut next = self.head.as_ref();
-        while let Some(node) = next {
-            // Some(), 即当到达链表尾时, 终止while let不成立, 终止迭代
+        let mut iter = self.head.as_ref();
+        while let Some(node) = iter {
             write!(f, "{} -> ", node.elem)?;
-            next = node.next.as_ref();
+            iter = node.next.as_ref();
         }
-        write!(f, "Node")?;
+        write!(f, "None")?; // 尾
         Ok(())
     }
 }
@@ -39,106 +37,106 @@ impl List {
     fn new() -> Self {
         Self { head: None }
     }
-    // 向链表尾部插入
-    fn push(&mut self, elem: i32) -> &mut Self {
-        // 若链表为空
+    fn push_tail(&mut self, elem: i32) -> &mut Self {
         if self.head.is_none() {
             self.head = Some(Box::new(Node::new(elem)));
             return self;
         }
-        // 找到链表尾, 赋给pnode
-        let mut pnode = self.head.as_mut(); // 头
-        while let Some(cur_node) = pnode {
-            if cur_node.next.is_none() {
-                pnode = Some(cur_node);
-                break; // 已找到
+        // 找到list尾
+        let mut iter = self.head.as_mut();
+        while let Some(node) = iter {
+            if (node.next.is_none()) {
+                // 已找到
+                iter = Some(node);
+                break;
             }
-            pnode = cur_node.next.as_mut(); // 未找到, pnode后移, 继续向后遍历
+            iter = node.next.as_mut(); // 未找到, 继续向后遍历
         }
-        // 执行插入
-        pnode.map(|node| node.next = Some(Box::new(Node::new(elem))));
-
+        iter.map(|node| node.next = Some(Box::new(Node::new(elem)))); // 执行插入
         self
     }
-
-    // 链表反转
-    fn reverse(&mut self) {
-        let mut rnode: Link = self.head.take();
-        let mut lnode: Link = None;
-        while let Some(mut node) = rnode {
-            rnode = node.next; // rnode不断后移
-            node.next = lnode;
-            lnode = Some(node);
-        }
-        self.head = lnode;
-    }
-
-    // 找到链表中间节点
-    fn middle_node(&self) -> Option<&Box<Node>> {
+    // 找中点
+    fn find_mid(&mut self) -> Option<&Box<Node>> {
         if self.head.is_none() {
             return None;
         }
-
         let mut fast = self.head.as_ref();
         let mut slow = self.head.as_ref();
 
         while fast.is_some() && fast.unwrap().next.is_some() {
-            slow = slow.unwrap().next.as_ref();
             fast = fast.unwrap().next.as_ref().unwrap().next.as_ref();
+            slow = slow.unwrap().next.as_ref();
         }
         slow
     }
-
-    // 判断链表是否回文-用stack
-    fn is_palidrome_bystack(&self) -> bool {
+    // 是否回文-stack方式
+    fn is_palindrome_by_stack(&self) -> bool {
         if self.head.is_none() {
             return true;
         }
-        let mut cur = self.head.as_ref();
-
-        // 都放入栈(用数组实现)
-        let mut v = vec![];
-        while let Some(node) = cur {
-            v.push(node.elem);
-            cur = node.next.as_ref();
+        // fill in stack
+        let mut arr = vec![];
+        let mut iter = self.head.as_ref();
+        while let Some(node) = iter {
+            arr.push(node.elem);
+            iter = node.next.as_ref();
         }
-
-        // 出栈
-        cur = self.head.as_ref();
-        for elem in v.into_iter().rev() {
-            let node = cur.unwrap();
+        // get from stack
+        iter = self.head.as_ref();
+        for elem in arr.into_iter().rev() {
+            let node = iter.unwrap();
             if node.elem != elem {
                 return false;
             }
-            cur = node.next.as_ref();
+            iter = node.next.as_ref();
         }
-
         true
     }
 }
 
-mod tests {
-    use super::List;
-
-    #[test]
-    fn test_is_palidrome_bystack_should_ok() {
-        let mut list = List::new();
-        list.push(1).push(2).push(3).push(2).push(1);
-        let ret = list.is_palidrome_bystack();
-        println!("{}, {}", list, ret);
-        assert!(ret == true, "12321是回文字符串啊");
-    }
-
-    #[test]
-    fn test_is_palidrome_bystack_should_fail() {
-        let mut list = List::new();
-        list.push(1).push(2).push(3).push(4).push(5);
-        let ret = list.is_palidrome_bystack();
-        println!("{}, {}", list, ret);
-        assert!(ret == false, "12345不是回文字符串啊");
-    }
+fn main() {
+    println!("自己写一遍")
 }
 
-fn main() {
-    println!("rust写链表好难");
+mod tests {
+    use super::List;
+    #[test]
+    fn test_display_list() {
+        let mut l = List::new();
+        l.push_tail(1).push_tail(2).push_tail(3);
+        println!("{}", l);
+    }
+
+    #[test]
+    fn test_find_mid() {
+        let mut l = List::new();
+        l.push_tail(1).push_tail(2).push_tail(3);
+        let m = l.find_mid();
+        assert!(m.unwrap().as_ref().elem == 2, "mid should be 2");
+    }
+
+    #[test]
+
+    fn test_is_palindrome_by_stack_should_ok() {
+        let mut l = List::new();
+        l.push_tail(1)
+            .push_tail(2)
+            .push_tail(3)
+            .push_tail(2)
+            .push_tail(1);
+        let b = l.is_palindrome_by_stack();
+        assert!(b == true, "是回文");
+    }
+
+    #[test]
+    fn test_is_palindrome_by_stack_should_fail() {
+        let mut l = List::new();
+        l.push_tail(1)
+            .push_tail(2)
+            .push_tail(3)
+            .push_tail(4)
+            .push_tail(5);
+        let b = l.is_palindrome_by_stack();
+        assert!(b == false, "不是回文");
+    }
 }
