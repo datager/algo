@@ -89,7 +89,7 @@ impl List {
         slow
     }
 
-    // 判断链表是否回文
+    // 判断链表是否回文-用stack
     fn is_palidrome_bystack(&self) -> bool {
         if self.head.is_none() {
             return true;
@@ -119,16 +119,26 @@ impl List {
 
 mod tests {
     use super::List;
+
     #[test]
-    fn test_is_palidrome_bystack() {
+    fn test_is_palidrome_bystack_should_ok() {
         let mut list = List::new();
         list.push(1).push(2).push(3).push(2).push(1);
         let ret = list.is_palidrome_bystack();
         println!("{}, {}", list, ret);
         assert!(ret == true, "12321是回文字符串啊");
     }
+
+    #[test]
+    fn test_is_palidrome_bystack_should_fail() {
+        let mut list = List::new();
+        list.push(1).push(2).push(3).push(4).push(5);
+        let ret = list.is_palidrome_bystack();
+        println!("{}, {}", list, ret);
+        assert!(ret == false, "12345不是回文字符串啊");
+    }
 }
 
 fn main() {
-    println!("rust写链表好难")
+    println!("rust写链表好难");
 }
