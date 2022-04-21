@@ -1,5 +1,6 @@
 use std::fmt::Display;
 
+//用rust实现链表好麻烦, 因为有Option和Box, 所以经常要unwrap和as_ref, as_mut, 概念有点多, 大伙都说rust实现链表是高级难度, 容易劝退, 好歹手写下来了, 先告一段落, 后面继续巩固
 // 先定义节点, Option是为了判空, Box是为了放在heap上(由list特性决定的)
 type Link = Option<Box<Node>>;
 struct Node {
@@ -92,12 +93,23 @@ impl List {
         }
         true
     }
-}
+    // 链表反转
+    pub fn reverse(&mut self) {
+        let mut prev = None;
+        let mut cur = self.head.take();
 
+        while let Some(mut cur_inner) = cur.take() {
+            let next_tmp = cur_inner.next.take(); // 临时变量存储
+            cur_inner.next = prev.take(); // 执行反转
+            prev = Some(cur_inner); // prev后移, 用于下次迭代
+            cur = next_tmp; // cur后移, 用于下次迭代
+        }
+        self.head = prev.take();
+    }
+}
 fn main() {
-    println!("自己写一遍")
+    print!("1");
 }
-
 mod tests {
     use super::List;
     #[test]
@@ -138,5 +150,18 @@ mod tests {
             .push_tail(5);
         let b = l.is_palindrome_by_stack();
         assert!(b == false, "不是回文");
+    }
+
+    #[test]
+    fn test_reverse_should_ok() {
+        let mut l = List::new();
+        l.push_tail(1)
+            .push_tail(2)
+            .push_tail(3)
+            .push_tail(4)
+            .push_tail(5);
+        println!("原始为: {}", l);
+        l.reverse();
+        println!("反转后: {}", l);
     }
 }
