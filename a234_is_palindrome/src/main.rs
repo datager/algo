@@ -94,6 +94,10 @@ impl List {
         true
     }
     // 链表反转
+    // 保存 prev, cur, next_tmp三个变量, 向后迭代
+    // 每次将cur.next赋值给prev来实现反转
+    // 然后prev后移, cur后移, 方便下次迭代
+    // 最终返回prev作为list的head
     pub fn reverse(&mut self) {
         let mut prev = None;
         let mut cur = self.head.take();
