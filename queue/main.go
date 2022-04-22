@@ -1,0 +1,43 @@
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("----[ArrQueue]")
+	aq := NewArrQueue(3)
+	fmt.Println("----Push")
+	aq.Push(0)
+	aq.Push(1)
+	aq.Push(2)
+	aq.Push(3)
+	fmt.Println("----Pop")
+	aq.Pop()
+	aq.Pop()
+	aq.Pop()
+	aq.Pop()
+	fmt.Println("----Push")
+	aq.Push(0)
+	aq.Push(1)
+	aq.Push(2)
+	aq.Push(3)
+	fmt.Println("----done")
+
+	//fmt.Println("----[ListQueue]")
+	//lq := NewListQueue()
+	//fmt.Println("----Push")
+	//lq.Push(0)
+	//lq.Push(1)
+	//lq.Push(2)
+	//lq.Push(3)
+	//fmt.Println("----Pop")
+	//lq.Pop()
+	//lq.Pop()
+	//lq.Pop()
+	//lq.Pop()
+	//fmt.Println("----Push")
+	//lq.Push(0)
+	//lq.Push(1)
+	//lq.Push(2)
+	//lq.Push(3)
+	//fmt.Println("----done")
+}

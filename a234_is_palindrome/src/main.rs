@@ -110,6 +110,20 @@ impl List {
         }
         self.head = prev.take();
     }
+    // 链表中环的检测
+    // pub fn is_cycle(&mut self) -> bool {
+    //     let mut cur = self.head.as_ref();
+    //     while let Some(node) = cur {
+    //         if node == cur {
+    //             return true;
+    //         }
+    //     }
+    //     false
+    // }
+
+    // 两个有序的链表合并
+
+    // 删除链表倒数第 n 个结点
 }
 fn main() {
     print!("1");
