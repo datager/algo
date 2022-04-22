@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("----[ArrQueue]")
+	fmt.Println("----[SingleArrQueue]")
 	aq := NewArrQueue(3)
 	fmt.Println("----Push")
 	aq.Push(0)
@@ -22,7 +22,7 @@ func main() {
 	aq.Push(3)
 	fmt.Println("----done")
 
-	//fmt.Println("----[ListQueue]")
+	//fmt.Println("----[SingleListQueue]")
 	//lq := NewListQueue()
 	//fmt.Println("----Push")
 	//lq.Push(0)

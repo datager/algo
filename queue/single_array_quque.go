@@ -4,15 +4,15 @@ import (
 	"fmt"
 )
 
-type ArrQueue struct {
+type SingleArrQueue struct {
 	arr  []int
 	cap  int
 	head int
 	tail int
 }
 
-func NewArrQueue(cap int) ArrQueue {
-	return ArrQueue{
+func NewArrQueue(cap int) SingleArrQueue {
+	return SingleArrQueue{
 		arr:  make([]int, cap, cap), // 原计划用原生array实现, 但可用[3]int定义, 却不可用[cap]int定义, 故用slice实现
 		cap:  cap,
 		head: 0,
@@ -21,7 +21,7 @@ func NewArrQueue(cap int) ArrQueue {
 }
 
 // 固定cap的queue, 当head==tail时触发搬迁O(N)
-func (q *ArrQueue) Push(v int) bool {
+func (q *SingleArrQueue) Push(v int) bool {
 	if q.tail == q.cap {
 		if q.head == 0 {
 			fmt.Printf("push fail because full, head: %v, tail: %v\n", q.head, q.tail)
@@ -40,7 +40,7 @@ func (q *ArrQueue) Push(v int) bool {
 	return true
 }
 
-func (q *ArrQueue) Pop() bool {
+func (q *SingleArrQueue) Pop() bool {
 	if q.head == q.tail {
 		fmt.Printf("pop fail, head: %v, tail: %v\n", q.head, q.tail)
 		return false

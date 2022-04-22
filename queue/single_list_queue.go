@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type ListQueue struct {
+type SingleListQueue struct {
 	head *Node
 	tail *Node
 }
@@ -14,12 +14,12 @@ type Node struct {
 	Next *Node
 }
 
-func NewListQueue() ListQueue {
+func NewListQueue() SingleListQueue {
 	sentinel := &Node{
 		Elem: -1,
 		Next: nil,
 	}
-	l := ListQueue{
+	l := SingleListQueue{
 		head: sentinel,
 		tail: sentinel,
 	}
@@ -27,7 +27,7 @@ func NewListQueue() ListQueue {
 	return l
 }
 
-func (lq *ListQueue) Push(v int) {
+func (lq *SingleListQueue) Push(v int) {
 	lq.tail.Next = &Node{
 		Elem: v,
 		Next: nil,
@@ -36,7 +36,7 @@ func (lq *ListQueue) Push(v int) {
 	fmt.Printf("push %v ok, %v\n", v, lq)
 }
 
-func (lq *ListQueue) Pop() bool {
+func (lq *SingleListQueue) Pop() bool {
 	if lq.head == nil || lq.head.Next == nil {
 		fmt.Printf("pop fail, %v\n", lq)
 		return false
@@ -54,7 +54,7 @@ func (lq *ListQueue) Pop() bool {
 	return true
 }
 
-func (lq *ListQueue) String() string {
+func (lq *SingleListQueue) String() string {
 	s := ""
 	iter := lq.head
 	for iter != nil {
