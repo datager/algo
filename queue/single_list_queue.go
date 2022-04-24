@@ -9,11 +9,6 @@ type SingleListQueue struct {
 	tail *Node
 }
 
-type Node struct {
-	Elem int
-	Next *Node
-}
-
 func NewListQueue() SingleListQueue {
 	sentinel := &Node{
 		Elem: -1,

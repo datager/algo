@@ -2,48 +2,61 @@ package main
 
 import "fmt"
 
-// CycleQueue 当无环queue满时需搬迁数据O(N), 为避免可用环形queue
-// 当head==tail时, queue空
-// 当(head+1)%cap==tail时, queue满, 此时tail未存数据(即环形queue会浪费一个存储空间, 只能存cap-1个)
-type CycleArrQueue struct {
-	head int
-	tail int
-	arr  []int
-	cap  int
+// 环形链表queue, tail后接head形成环, 每次在tail和head之间Push()和Pop(), 很高效
+type CycleListQueue struct {
+	head *Node
+	tail *Node
 }
 
-func NewCycleArrQueue(cap int) *CycleArrQueue {
-	cq := &CycleArrQueue{
-		head: 0,
-		tail: 0,
-		arr:  make([]int, cap, cap),
-		cap:  cap,
+func NewCycleListQueue() *CycleListQueue {
+	head := &Node{
+		Elem: -1,
+		Next: nil,
 	}
-	fmt.Printf("NewCycleArrQueue, %s\n", cq)
-	return cq
+	tail := &Node{
+		Elem: -2,
+		Next: nil,
+	}
+	// 刚开始head与tail即成环
+	head.Next = tail
+	tail.Next = head
+	clq := &CycleListQueue{
+		head: head,
+		tail: tail,
+	}
+	fmt.Printf("NewCycleQueue, %s\n", clq.String())
+	return clq
 }
 
-func (cq *CycleArrQueue) String() string {
-	return fmt.Sprintf("head: %v, tail: %v", cq.head, cq.tail)
+func (clq *CycleListQueue) String() string {
+	s := ""
+	iter := clq.head
+	for iter.Next != clq.head {
+		s += fmt.Sprintf("%v->", iter.Elem)
+		iter = iter.Next
+	}
+	s += fmt.Sprintf("%v", clq.tail.Elem)
+	return s
 }
 
-func (cq *CycleArrQueue) Push(v int) bool {
-	if (cq.tail+1)%cq.cap == cq.head {
-		fmt.Printf("push fail, %s\n", cq)
+// Push() head=>新node=>...=>tai=>head
+func (clq *CycleListQueue) Push(v int) {
+	node := &Node{
+		Elem: v,
+		Next: clq.head.Next,
+	}
+	clq.head.Next = node
+	fmt.Printf("push %v ok, %s\n", v, clq.String())
+}
+
+// Pop() head=>被移除的node=>...=>tai=>head
+func (clq *CycleListQueue) Pop() bool {
+	if clq.head.Next == clq.tail {
+		fmt.Printf("pop fail, %s\n", clq)
 		return false
 	}
-	cq.arr[cq.tail] = v
-	cq.tail = (cq.tail + 1) % cq.cap
-	fmt.Printf("push %v ok, %s\n", v, cq)
+	v := clq.head.Next.Elem
+	clq.head.Next = clq.head.Next.Next
+	fmt.Printf("pop %v ok, %s\n", v, clq)
 	return true
-}
-
-func (cq *CycleArrQueue) Pop() {
-	if cq.head == cq.tail {
-		fmt.Printf("pop fail, %s\n", cq)
-		return
-	}
-	v := cq.arr[cq.head]
-	cq.head = (cq.head + 1) % cq.cap
-	fmt.Printf("pop %v ok, %s\n", v, cq)
 }
